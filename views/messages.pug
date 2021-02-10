@@ -1,0 +1,17 @@
+extends layout
+
+block scripts
+  script(src='javascripts/messages.js')
+
+block content  
+  .container-fluid
+    .row.sticky-top
+      .col-8.bg-danger
+        marquee urgent
+      .col-4
+        .sticky Chrono
+    .row
+      .col
+        h1#titrePiece.text-center
+    .row
+      #tables.col

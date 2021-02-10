@@ -1,0 +1,8 @@
+if (validSession)
+  form.form-inline.my-2.my-lg-0(action='/login' method='POST')
+    button.btn.btn-primary.mx-auto(type='submit') Se déconnecter
+else
+  form.form-inline.my-2.my-lg-0(action='/login' method='POST')
+    input#inputUsername.form-control.mr-sm-2(type='username' name="username" aria-describedby='emailHelp' placeholder='Utilisateur')
+    input#InputPassword.form-control.mr-sm-2(type='password' name="password" placeholder='Mot de passe')
+    button.btn.btn-primary.mx-auto(type='submit') Se conncecter

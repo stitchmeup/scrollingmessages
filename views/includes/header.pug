@@ -1,0 +1,23 @@
+nav.navbar.navbar-expand-lg.navbar-light.bg-light
+  a.navbar-brand(href='/') Messages D&eacute;filants
+  #navbarSupportedContent.collapse.navbar-collapse
+    ul.navbar-nav.mr-auto
+      li.nav-item1
+        a.nav-link(href='/')
+          | Configer un écran 
+      li.nav-item
+        a.nav-link(href='/admin') Administrer
+    include loginForm
+case woops
+  when "1"
+    .container-fluid.row.justify-content-end
+      .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+        strong Utilisateur ou mot de passe incorrect!
+        button.close(type='button' data-dismiss='alert' aria-label='Close')
+          span(aria-hidden='true') &times;
+  when "2"
+    .container-fluid.row.justify-content-end
+      .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+        strong Erreur d'authentification!
+        button.close(type='button' data-dismiss='alert' aria-label='Close')
+          span(aria-hidden='true') &times;
