@@ -10,7 +10,7 @@ var app = express();
 
 // require all defined routes
 var routers = {}
-routers.names = ['index', 'getxml', 'messages', 'login', 'admin'];
+routers.names = ['index', 'getxml', 'messages', 'login', 'admin', 'logout'];
 routers.names.forEach((route) => {
   routers[route] = require(`./routes/${route}`)
 });

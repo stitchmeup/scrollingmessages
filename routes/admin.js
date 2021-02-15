@@ -26,7 +26,7 @@ router.get('/admin', async function(req, res) {
   } catch (err) {
     res.render('error', {message: "Woops, something went wrong!", error: {status: "500, Internal Server Error"} });
   } finally {
-    //await dbClient.close();
+    await dbClient.close();
   }
 });
 

@@ -32,7 +32,7 @@ async function(req, res) {
       errors.other = true
     } finally {
       // Ensures that the client will close when you finish/error
-      await dbClient.close();
+      //await dbClient.close();
     }
   } catch (err) {
     // if validationResult failed
