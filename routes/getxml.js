@@ -16,7 +16,7 @@ router.get('/getxml', [
 ],
 function(req, res) {
   if (Object.keys(req.query).length == 0) {
-    res.sendFile('projet.xml', { root: __dirname + '/../public/' })
+    res.sendFile('projet.xml', { root: __dirname + '/../public/' });
   } else {
     try {
       validationResult(req).throw();
@@ -100,13 +100,11 @@ function(req, res) {
         },
         "listeEquipes": true,
         "scene": {
-          "$content":
-          []
+          "$content": []
         }
       }
     }
 
-    console.log(scheme);
     let xmlFilePath = './public/projet.xml';
     fs.readFile(xmlFilePath, async function(err, data) {
       const xmlObj = xmlParser.toJson(data, { reversible: true, object: true });

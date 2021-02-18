@@ -10,7 +10,7 @@ function(req, res) {
   var woops = null;
   try {
     validationResult(query).throw();
-    var woops = req.query.woops
+    var woops = req.query.woops;
   } finally {
     res.render('index', {woops: woops});
   }
