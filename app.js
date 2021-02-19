@@ -8,39 +8,22 @@ var cors = require('cors');
 
 var app = express();
 
-// require all defined routes
-var routers = {}
-routers.names = ['index', 'getxml', 'messages', 'login', 'admin', 'logout'];
-routers.names.forEach((route) => {
-  routers[route] = require(`./routes/${route}`)
-});
-
-
-
-var app = express();
-
-var allowlist = [];
-// Differenciate prod from dev
+// allow list for cors
+var allowlist = ['http://127.0.0.1:3000'];
+// differenciate prod from dev
 if (app.get('env') === 'production') {
   allowlist.push('https://scrollingmessages.hopto.org')
-} else {
-  allowlist.push('http://127.0.0.1:3000')
 }
 var corsOptions = {
   origin: allowlist
 }
 
-// view engine setup
-app.set('views', path.join(__dirname, './views'));
-app.set('view engine', 'pug');
-
-
-// helmet
+// always wear helmet (CSP)
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "script-src": ["'self'", "code.jquery.com", "cdn.jsdelivr.net"]
+      'script-src': ["'self'", "code.jquery.com", "cdn.jsdelivr.net"]
     }
   })
 );
@@ -55,10 +38,12 @@ app.use(helmet.permittedCrossDomainPolicies());
 app.use(helmet.referrerPolicy());
 app.use(helmet.xssFilter());
 
-
 // CORS
 app.use(cors(corsOptions))
 
+// view engine setup
+app.set('views', path.join(__dirname, './views'));
+app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -69,15 +54,39 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.use(cookieParser());
 
+
+// require all defined routes
+var routers = {}
+routers.names = ['index', 'getxml', 'messages', 'login', 'admin', 'logout',
+ 'upload'];
+routers.names.forEach((route) => {
+  routers[route] = require(`./routes/${route}`)
+});
+
 // use all routes
 routers.names.forEach((route) => {
   app.use('/', routers[route]);
 });
 
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
+});
+
+// Specific error handler
+app.use(function(err, req, res, next) {
+  let errorsMessages = {
+    400: 'Bad Request',
+    500: 'Internal Server Error'
+  }
+  if (err === 500) res.status(500).render('error', {
+    message: 'Woops, something went wrong!',
+    error: {
+      status: `${err} ${errorsMessages[err]}`
+    }
+  });
+  else if (err === 400) res.redirect('/?woops=2');
+  else next(err);
 });
 
 // error handler
@@ -88,9 +97,8 @@ app.use(function(err, req, res) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error')
 });
-
 
 
 module.exports = app;

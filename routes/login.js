@@ -13,13 +13,13 @@ body("username").isAscii(),
 body("password").isAscii()
 ],
 async function(req, res) {
+  var errors = {'login': 0, 'other': false}
+  var token, username;
+
   try {
     validationResult(req).throw();
-
-    var errors = {'login': 0, 'other': false}
-    var token, username;
-    const client = new DbClient("appUser");
-
+    var client = new DbClient("appUser");
+    
     try {
       // Connect to db
       await client.connect();
@@ -73,16 +73,11 @@ async function(req, res) {
 
       // Go to admin page
       res.redirect('/admin')
-
-
-    } else if (errors.login) {
-      // login failed (1) or authentication error (2)
-      res.status(400).redirect(`/?woops=${errors.login}`);
-
-    } else if (errors.other) {
-      // something else went wrong
-      res.status(500).render('error', {message: "Woops, something went wrong!", error: {status: "500, Internal Server Error"} });
     }
+    // login failed (1) or authentication error (2)
+    else if (errors.login) { next(400); }
+      // something else went wrong
+    else if (errors.other) { next(500); }
   }
 });
 

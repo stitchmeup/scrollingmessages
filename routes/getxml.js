@@ -14,7 +14,7 @@ router.get('/getxml', [
   query('end').optional().isInt().toInt(),
   query('text').optional().isIn(['full', 'sync'])
 ],
-function(req, res) {
+function(req, res, next) {
   if (Object.keys(req.query).length == 0) {
     res.sendFile('projet.xml', { root: __dirname + '/../public/' });
   } else {
@@ -78,8 +78,7 @@ function(req, res) {
       });
 
     } catch (err) {
-      console.log(err);
-      res.status(400).json( { 'errors': err.array() })
+      next(createError(400))
     }
   }
 });
@@ -87,7 +86,7 @@ function(req, res) {
 /* POST */
 router.post('/getxml',
 query('piece').isAscii().escape(),
-function(req, res) {
+function(req, res, next) {
   try {
     validationResult(req).throw();
 
@@ -115,9 +114,8 @@ function(req, res) {
       res.send(formatXml(finalXml, { collapseContent: true }));
     });
 
-  } catch (err) {
-    console.log(err);
-    res.status(400).json( { 'errors': err.array() })
+  } catch {
+    next(createError(500))
   }
 });
 

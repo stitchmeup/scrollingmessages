@@ -4,7 +4,7 @@ const dbUsers = {
     "password": encodeURIComponent("userPassword")
   },
   "appAdmin": {
-    "username": encodeURIComponent("appUser"),
+    "username": encodeURIComponent("appAdmin"),
     "password": encodeURIComponent("adminPassword")
   }
 }

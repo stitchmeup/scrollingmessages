@@ -5,10 +5,9 @@ var DbClient = require('../modules/DbClient')
 
 
 /* GET home page. */
-router.get('/admin', async function(req, res) {
-  const client = new DbClient("appUser");
-  var check
-  var error = false
+router.get('/admin', async function(req, res, next) {
+  var client = new DbClient("appUser");
+  var check = 200
 
   try {
     // Connect to db
@@ -16,24 +15,18 @@ router.get('/admin', async function(req, res) {
 
     // Authentication
     await client.checkAuth(req.cookies.token, req.cookies.username)
-    .then(res => check = res)
-    .catch(() => error = true);
-    
+    .then(res => { if (!res) check = 400; })
+    .catch(() => check = 500);
+
   } catch {
     error = true
 
   } finally {
     await client.close();
-    if (error) {
-      // Server Error
-      res.status(500).render('error', {message: "Woops, something went wrong!", error: {status: "500, Internal Server Error"}});
-    } else if (check) {
-      // Auth succesfull
-      res.render('admin', {validSession: true})
-    } else {
-      // Auth denied
-      res.status(400).redirect(`/?woops=${check}`)
-    }
+    // successful auth
+    if (check === 200) res.render('admin', {validSession: true});
+    // Auth denied or serveur error
+    else next(check);
   }
 });
 

@@ -34,16 +34,14 @@ class DbClient {
   async findUser(username) {
     const dbQuery = { username: username }
     // findOne
-    return await this.db
-    .collection('users')
+    return await this.db.collection('users')
     .findOne(dbQuery);
   }
 
   async findUserById(id) {
     const dbQuery = { "_id": DbClient.param.objectId(id) }
     // findOne
-    return await this.db
-    .collection('users')
+    return await this.db.collection('users')
     .findOne(dbQuery);
   }
 
@@ -63,6 +61,7 @@ class DbClient {
     }
   }
 
+  // Check Auth
   async checkAuth(tokenCookie, usernameCookie) {
     let verifiedToken = await jwt.verifyToken(tokenCookie);
     if (verifiedToken.status) {
@@ -73,7 +72,6 @@ class DbClient {
       return false;
     }
   }
-
 }
 
 /*

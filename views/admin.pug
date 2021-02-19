@@ -1,3 +1,10 @@
 extends layout
 
 block content
+  form#uploadFile(action='/admin/upload' method='POST')
+    .input-group.mb-3
+    .input-group-prepend
+      button#xmlFileAddon.btn.btn-outline-secondary(type='button') Upload
+    .custom-file
+      input#xmlFile.custom-file-input(type='file' aria-describedby='xmlFile')
+      label.custom-file-label(for='xmlFile') Choose file
