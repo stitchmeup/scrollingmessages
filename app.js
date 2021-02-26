@@ -52,21 +52,23 @@ app.use(express.urlencoded({ extended: false }));
 // makes public files available
 app.use('/', express.static(path.join(__dirname, 'public')));
 
+// Parse Cookie!
 app.use(cookieParser());
 
 
 // require all defined routes
-var routers = {}
-routers.names = ['index', 'getxml', 'messages', 'login', 'admin', 'logout',
- 'upload'];
-routers.names.forEach((route) => {
-  routers[route] = require(`./routes/${route}`)
-});
+var routers = {
+  base: {
+    names: ['index', 'getxml', 'messages', 'login', 'logout', 'playsList']
+  },
+};
 
-// use all routes
-routers.names.forEach((route) => {
-  app.use('/', routers[route]);
+routers.base.names.forEach((route) => {
+  routers.base[route] = require(`./routes/${route}`);
+  app.use('/', routers.base[route]);
 });
+var adminRouter = require('./routes/admin');
+app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -75,17 +77,20 @@ app.use(function(req, res, next) {
 
 // Specific error handler
 app.use(function(err, req, res, next) {
+  console.log("ERROR ROUTE")
+  console.log(err)
   let errorsMessages = {
     400: 'Bad Request',
+    401: 'Unauthorized',
     500: 'Internal Server Error'
   }
-  if (err === 500) res.status(500).render('error', {
+  if (err === 500 || err === 400) res.status(err).render('error', {
     message: 'Woops, something went wrong!',
     error: {
       status: `${err} ${errorsMessages[err]}`
     }
   });
-  else if (err === 400) res.redirect('/?woops=2');
+  else if (err === 401) res.redirect('/?woops=2');
   else next(err);
 });
 

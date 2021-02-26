@@ -1,4 +1,5 @@
-const { MongoClient, ObjectId } = require("mongodb");
+const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require("bcrypt");
 const jwt = require("./jwtAuth.js")
 //const dbUsers = require("../config/db.users")
@@ -38,13 +39,68 @@ class DbClient {
     .findOne(dbQuery);
   }
 
+  // Find user by object id (jwt token use it)
   async findUserById(id) {
-    const dbQuery = { "_id": DbClient.param.objectId(id) }
+    const dbQuery = { "_id": new DbClient.param.objectId(id) }
     // findOne
     return await this.db.collection('users')
     .findOne(dbQuery);
   }
 
+  // Find plays by filename
+  async findPlayByNameHash(nameHash) {
+    const dbQuery = { "nameHash": nameHash };
+    return await this.db.collection('playsList')
+    .findOne(dbQuery)
+    .then(res => res)
+    .catch(err => err);
+  }
+
+  async getPlayContent(id) {
+    const dbQuery = { "_id": new DbClient.param.objectId(id) }
+    return await this.db.collection('playsContent')
+    .findOne(dbQuery)
+    .then(res => res)
+    .catch(err => err)
+  }
+
+  async getPlaysList() {
+    const dbQueryOptions = { 'projection': {'_id': 0, 'title': 1, 'name': 1, 'nameHash': 1}}
+    return await this.db.collection('playsList')
+    .find({}, dbQueryOptions).toArray()
+    .then(res => res)
+    .catch(err => err)
+  }
+
+  // insert play into database
+  async insertPlay(playObj, name, nameHash) {
+    let insert = await this.db.collection('playsContent')
+    .insertOne(playObj, { checkKeys: false })
+    .then(res => res)
+    .catch(err => err);
+    if (insert.hasOwnProperty('insertedId')) {
+      return await this.insertIntoPlaysList(playObj, name, nameHash, insert.insertedId)
+    } else {
+      return false
+    }
+  }
+
+  // insert db metadata into playsList collecztion
+  async insertIntoPlaysList(playObj, name, nameHash, playContentId) {
+    let dbQuery = {
+      title: playObj.piece.titre['$t'],
+      name: name,
+      nameHash: nameHash,
+      playContentId: new DbClient.param.objectId(playContentId)
+    }
+    if (playObj.piece.hasOwnProperty('listeEquipes')) {
+      dbQuery.equipes = playObj.piece.listeEquipes.id.map(field => field['$t']);
+    }
+    return await this.db.collection('playsList')
+    .insertOne(dbQuery)
+    .then(res => res)
+    .catch(err => err);
+  }
 
   // Check password for a given user (so ugly)
   async checkPwd(username, pwd) {

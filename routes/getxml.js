@@ -1,25 +1,33 @@
 var express = require('express');
 var router = express.Router();
 var path = require('path');
-var xmlParser = require('../modules/xmlParser');
+var xml2jsonParser = require('../modules/xml2jsonParser');
 var formatXml = require('xml-formatter');
 var fs = require('fs');
 var { query, validationResult, oneOf } = require('express-validator');
+var DbClient = require('../modules/DbClient')
 
 
 /* GET */
 router.get('/getxml', [
+  query('piece').isHash('md5'),
   query('equipe.*').optional().isAscii().escape(),
   query('start').optional().isInt().toInt(),
   query('end').optional().isInt().toInt(),
   query('text').optional().isIn(['full', 'sync'])
 ],
-function(req, res, next) {
-  if (Object.keys(req.query).length == 0) {
-    res.sendFile('projet.xml', { root: __dirname + '/../public/' });
-  } else {
-    try {
-      validationResult(req).throw();
+async function(req, res, next) {
+  try {
+    validationResult(req).throw();
+
+    // Get meta data about the play requested
+    var client = new DbClient("appUser");
+    await client.connect();
+
+    let playMetaData = await client.findPlayByNameHash(req.query.piece)
+    .catch(err => { throw new Error(err) })
+
+    if (playMetaData) {
       let scheme = {
         "scene": {
           "$strict": true,
@@ -67,55 +75,74 @@ function(req, res, next) {
         delete scheme.scene.timing.text;
       }
 
-      let xmlFilePath = './public/projet.xml';
-      fs.readFile(xmlFilePath, async function(err, data) {
-        const xmlObj = xmlParser.toJson(data, { reversible: true, object: true });
-        const xmlObjModified = await xmlParser.modifyXmlObj(xmlObj, scheme).then((res) => res);
-        const stringifiedXmlObj = JSON.stringify(xmlObjModified);
-        const finalXml = xmlParser.toXml(stringifiedXmlObj);
-        res.set('Content-type', 'text/xml');
-        res.send(formatXml(finalXml, { collapseContent: true }));
-      });
+      // Get requested play content
+      const playObj = {
+        'piece': await client.getPlayContent(playMetaData.playContentId)
+        .then(res => res.piece)
+        .catch(err => { throw new Error(500)} )
+      }
+      const playObjModified = await xml2jsonParser.modifyXmlObj(playObj, scheme).then((res) => res);
+      const stringifiedPlayObj = JSON.stringify(playObjModified);
+      const finalXml = xml2jsonParser.toXml(stringifiedPlayObj);
 
-    } catch (err) {
-      next(createError(400))
-    }
+      res.set('Content-type', 'text/xml');
+      res.send(formatXml(finalXml, { collapseContent: true }));
+    } else { throw new Error("La pièce n'existe pas.") }
+
+    //await client.close();
+  } catch (err) {
+    if (err === 500) next(err)
+    else next(400)
   }
 });
 
 /* POST */
 router.post('/getxml',
-query('piece').isAscii().escape(),
-function(req, res, next) {
+query('piece').isHash('md5'),
+async function(req, res, next) {
   try {
     validationResult(req).throw();
 
-    // C'est moche, revoir une nouvelle version du parser
-    let scheme = {
-      "piece": {
-        "$strict": false,
-        "titre": {
-          "$content": []
-        },
-        "listeEquipes": true,
-        "scene": {
-          "$content": []
+    // Get meta data about the play requested
+    var client = new DbClient("appUser");
+    await client.connect();
+
+    let playMetaData = await client.findPlayByNameHash(req.query.piece)
+    .catch(err => { throw new Error(err) })
+
+    if (playMetaData) {
+      // C'est moche, revoir une nouvelle version du parser
+      let scheme = {
+        "piece": {
+          "$strict": false,
+          "titre": {
+            "$content": []
+          },
+          "listeEquipes": true,
+          "scene": {
+            "$content": []
+          }
         }
       }
-    }
 
-    let xmlFilePath = './public/projet.xml';
-    fs.readFile(xmlFilePath, async function(err, data) {
-      const xmlObj = xmlParser.toJson(data, { reversible: true, object: true });
-      const xmlObjModified = await xmlParser.modifyXmlObj(xmlObj, scheme).then((res) => res);
-      const stringifiedXmlObj = JSON.stringify(xmlObjModified);
-      const finalXml = xmlParser.toXml(stringifiedXmlObj);
+      // Get requested play content
+      const playObj = {
+        'piece': await client.getPlayContent(playMetaData.playContentId)
+        .then(res => res.piece)
+      }
+      const playObjModified = await xml2jsonParser.modifyXmlObj(playObj, scheme).then((res) => res);
+      const stringifiedPlayObj = JSON.stringify(playObjModified);
+      const finalXml = xml2jsonParser.toXml(stringifiedPlayObj);
+
       res.set('Content-type', 'text/xml');
       res.send(formatXml(finalXml, { collapseContent: true }));
-    });
 
-  } catch {
-    next(createError(500))
+    } else { throw new Error("La pièce n'existe pas"); }
+
+    //await client.close()
+  } catch (err) {
+    if (err === "La pièce n'existe pas") next(400)
+    else next(500)
   }
 });
 

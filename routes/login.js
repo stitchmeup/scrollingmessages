@@ -12,14 +12,14 @@ router.post('/login', [
 body("username").isAscii(),
 body("password").isAscii()
 ],
-async function(req, res) {
+async function(req, res, next) {
   var errors = {'login': 0, 'other': false}
   var token, username;
 
   try {
     validationResult(req).throw();
     var client = new DbClient("appUser");
-    
+
     try {
       // Connect to db
       await client.connect();
@@ -37,15 +37,10 @@ async function(req, res) {
       .catch(err => {
         errors.other = true;
       });
-
+      //await client.close();
     } catch {
       errors.other = true
-
-    } finally {
-      // Ensures that the client will close when you finish/error
-      await client.close();
     }
-
   } catch (err) {
     // if validationResult failed
     if (err.hasOwnProperty('errors')) {

@@ -1,10 +1,15 @@
 extends layout
 
 block content
-  form#uploadFile(action='/admin/upload' method='POST')
-    .input-group.mb-3
-    .input-group-prepend
-      button#xmlFileAddon.btn.btn-outline-secondary(type='button') Upload
-    .custom-file
-      input#xmlFile.custom-file-input(type='file' aria-describedby='xmlFile')
-      label.custom-file-label(for='xmlFile') Choose file
+  .container-fluid
+    h2 Ajouter une pièce
+    form#uploadFile(action='/admin/upload' method='POST' enctype='multipart/form-data')
+      .form-group.row.align-item-center
+        label.col-sm-2.col-form-label(for='name') Nom de la pièce
+        .col-auto
+          input#name.form-control(type='text' name='name')
+        label.col-sm-2.col-form-label(for='xmlFile')  Sélectionner un fichier au format XML
+        .col-auto
+          input#xmlFile(type='file' name='xmlFile' value='xmlFile')
+        button.btn.btn-primary.mx-auto(type='submit') Ajouter
+      

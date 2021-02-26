@@ -1,13 +1,13 @@
-const xmlParser = require("xml2json")
+const xml2jsonParser = require("xml2json")
 //const formatXml = require("xml-formatter")
 //const fs = require("fs");
 
-xmlParser.isTypeObject = (obj) => typeof obj == "object" && obj != null;
+xml2jsonParser.isTypeObject = (obj) => typeof obj == "object" && obj != null;
 
 
 // Parse object, array, string, null in a same way (type agnostic)
 // callback function is applied to all object of obj if it is an array or obj itself
-xmlParser.parseObj = function(obj, callback, args) {
+xml2jsonParser.parseObj = function(obj, callback, args) {
   // If not of type Object, return the object
   if (!this.isTypeObject(obj)) return new Promise(resolve => resolve(obj));
 
@@ -30,12 +30,12 @@ xmlParser.parseObj = function(obj, callback, args) {
   }
 }
 
-xmlParser.parseForContent = function(obj, content) {
+xml2jsonParser.parseForContent = function(obj, content) {
   if (content.includes(obj.$t)) return obj;
   return null;
 }
 
-xmlParser.parseForAttr = function(str, attr) {
+xml2jsonParser.parseForAttr = function(str, attr) {
   // NOT SURE
   // NOT TESTED
   if (attr.includes(str)) return str;
@@ -65,7 +65,7 @@ xmlParser.parseForAttr = function(str, attr) {
 // and will return tag3 with tag4 and tag5 only if tag 4 attribute match value
 //
 // all content $t not describe in the scheme is kept
-xmlParser.modifyXmlObj = async function(obj, scheme) {
+xml2jsonParser.modifyXmlObj = async function(obj, scheme) {
   // Sanity check
   if (!this.isTypeObject(obj) || Object.keys(obj).length === 0) return obj;
   if (!this.isTypeObject(scheme) || Object.keys(scheme).length === 0) return obj;
@@ -158,12 +158,12 @@ let scheme = {
 let xmlFilePath = "./public/generic_xml.xml"
 // Callback must be async too
 fs.readFile(xmlFilePath, async function(err, data) {
-  const xmlObj = xmlParser.toJson(data, { reversible: true, object: true })
-  const xmlObjModified = await xmlParser.modifyXmlObj(xmlObj, scheme).then((res) => res);
+  const xmlObj = xml2jsonParser.toJson(data, { reversible: true, object: true })
+  const xmlObjModified = await xml2jsonParser.modifyXmlObj(xmlObj, scheme).then((res) => res);
   console.log(xmlObjModified['piece']['scene'][0]['timing']);
   const stringifiedXmlObj = JSON.stringify(xmlObjModified)
-  const finalXml = xmlParser.toXml(stringifiedXmlObj)
+  const finalXml = xml2jsonParser.toXml(stringifiedXmlObj)
   console.log(formatXml(finalXml, { "collapseContent": true }));
 })
 */
-module.exports = xmlParser;
+module.exports = xml2jsonParser;
