@@ -7,7 +7,7 @@ var helmet = require('helmet');
 var cors = require('cors');
 
 var app = express();
-
+/*
 // allow list for cors
 var allowlist = ['http://127.0.0.1:3000'];
 // differenciate prod from dev
@@ -40,7 +40,7 @@ app.use(helmet.xssFilter());
 
 // CORS
 app.use(cors(corsOptions))
-
+*/
 // view engine setup
 app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'pug');

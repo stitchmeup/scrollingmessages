@@ -20,9 +20,8 @@ function buildPlaysListForm(playsList) {
   selectPlays.innerHTML = playsHTML;
   selectPlays.onchange = function buildPlayConfForm() {
     var selectPlays = document.getElementById('playsList')
-    nameHash = selectPlays.options[selectPlays.selectedIndex].value)
+    nameHash = selectPlays.options[selectPlays.selectedIndex].value
     console.log(playsList)
-    if ()
     let form = `
     <form class="d-flex flex-column border-top m-2" id="getmessages" action="/messages" method="GET">
       <div class="form-group row">
