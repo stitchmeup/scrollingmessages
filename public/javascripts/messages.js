@@ -1,5 +1,5 @@
 // Ajax
-function getXML(url){
+function playData(url){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -143,5 +143,5 @@ function parseXML(xml) {
 
 // Main
 const queryString = window.location.search;
-const url = "getxml" + queryString;
-getXML(url);
+const url = "playData" + queryString;
+playData(url);

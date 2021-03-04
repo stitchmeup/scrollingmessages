@@ -65,7 +65,7 @@ class DbClient {
   }
 
   async getPlaysList() {
-    const dbQueryOptions = { 'projection': {'_id': 0, 'title': 1, 'name': 1, 'nameHash': 1}}
+    const dbQueryOptions = { 'projection': {'_id': 0}}
     return await this.db.collection('playsList')
     .find({}, dbQueryOptions).toArray()
     .then(res => res)

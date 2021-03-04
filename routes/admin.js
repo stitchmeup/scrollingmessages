@@ -7,7 +7,7 @@ var fs = require('fs');
 var crypto = require('crypto');
 var { body, validationResult } = require('express-validator');
 var fileUpload = require('express-fileupload');
-var xmlParser = require("xml2json")
+var xml2jsonParser = require("xml2json")
 
 /* GET home page. */
 router.use(async function adminAuth(req, res, next) {
@@ -67,7 +67,7 @@ async function(req, res, next) {
       // Insert play into database
       fs.readFile(req.file.path, async function(err, data) {
         if (err) throw new Error(err);
-        const xmlObj = JSON.parse(xmlParser.toJson(data, { reversible: true }))
+        const xmlObj = JSON.parse(xml2jsonParser.toJson(data, { reversible: true }))
         await client.insertPlay(xmlObj, req.body.name, nameHash)
         .catch(err => { throw new Error(err) });
       });

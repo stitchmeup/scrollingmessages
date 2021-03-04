@@ -1,41 +1,13 @@
-//
-  Un premier formulaire qui permet de sélectionner la pièce
-  et d'envoyer une requête AJAX pour récupérer la liste des équipes disponibles
-  La requête AJAX évite le refresh de la page, ça fait plus propre
-//
-  Pour l'instant on a qu'une piece, donc lorsque tu cliques sur sélectionner,
-  Ça envoie devra faire la requete AJAX (en POST) à /getxml
-//
-  Pour te donner une idée de quoi je parle en terme de code et de rendu:
-  https://www.digitalocean.com/community/tutorials/submitting-ajax-forms-with-jquery
-  en cas de succès, ça affiche le reste du formulaire (id getmessages)
-
-form#getpieces.d-flex.flex-column.border-top.m-2(action='/getxml' method='POST')
-  .form-group
-    label(for='pieces') Pi&egrave;ce
-    //
-      Listera les pièces disponibles (pour l'instant la seule pièce par défaut)
-      Pour l'instant, côté serveur, ça change rien ce que l'utilisateur sélectionnes comme pièces
+.container-fluid
+    label(for='piece') Sélectionner une pi&egrave;ce
     .row.justify-content-between
-      select#piece.form-control.col-7(name='piece')
-        option ndksJdAn
-        option ndksJdAn
-        option ndksJdAn
-      button.btn.btn-primary.col-3(type='submit') S&eacute;clectionner
-// formulaire d'après à afficher uniquement une fois la pièce sélectionner et la requête AJAX réussie (success)
-//
-  En fait je suis con, autant envoyer directement les résultats du formulaire à /messages :D
-  Donc les id des champs doivent correspondre à ce qui est attendu comme paramètres
-form#getmessages.d-flex.flex-column.border-top.m-2(action='/messages' method='GET')
+      select#playsList.form-control.col-auto
+
+form#screenConf.d-flex.flex-column.border-top.m-2(action='/messages' method='GET')
   .form-group.row
     .col-6
       label(for='equipes') Equipes
-      // à constuire en JS à partir du résultat de la reponse reçue de la AJAX réussie
-      // on peut séléctionner plusieurs équipes en restant appuyé sur CTRL
-      select#equipe.form-control(multiple='' name='equipe')
-        // exemple de rendu en HTML
-        option a
-        option 01
+      select#equipes.form-control(multiple='' name='equipe')
     .col-3
       label(for='start') Sc&egrave;ne de d&eacute;but
       input#start.form-control(type='number' name='start' placeholder='1' value='1' size='16')

@@ -4,12 +4,12 @@ var path = require('path');
 var xml2jsonParser = require('../modules/xml2jsonParser');
 var formatXml = require('xml-formatter');
 var fs = require('fs');
-var { query, validationResult, oneOf } = require('express-validator');
+var { query, body, validationResult, oneOf } = require('express-validator');
 var DbClient = require('../modules/DbClient')
 
 
 /* GET */
-router.get('/getxml', [
+router.get('/playData', [
   query('piece').isHash('md5'),
   query('equipe.*').optional().isAscii().escape(),
   query('start').optional().isInt().toInt(),
@@ -91,23 +91,25 @@ async function(req, res, next) {
 
     //await client.close();
   } catch (err) {
+    console.log(err)
     if (err === 500) next(err)
     else next(400)
   }
 });
 
 /* POST */
-router.post('/getxml',
-query('piece').isHash('md5'),
+router.post('/playData',
+body('piece').isHash('md5'),
 async function(req, res, next) {
   try {
     validationResult(req).throw();
+
 
     // Get meta data about the play requested
     var client = new DbClient("appUser");
     await client.connect();
 
-    let playMetaData = await client.findPlayByNameHash(req.query.piece)
+    let playMetaData = await client.findPlayByNameHash(req.body.piece)
     .catch(err => { throw new Error(err) })
 
     if (playMetaData) {
@@ -137,11 +139,11 @@ async function(req, res, next) {
       res.set('Content-type', 'text/xml');
       res.send(formatXml(finalXml, { collapseContent: true }));
 
-    } else { throw new Error("La pièce n'existe pas"); }
+    } else { throw new Error(400); }
 
     //await client.close()
   } catch (err) {
-    if (err === "La pièce n'existe pas") next(400)
+    if (err === 400) next(err)
     else next(500)
   }
 });

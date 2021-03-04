@@ -59,7 +59,7 @@ app.use(cookieParser());
 // require all defined routes
 var routers = {
   base: {
-    names: ['index', 'getxml', 'messages', 'login', 'logout', 'playsList']
+    names: ['index', 'playData', 'messages', 'login', 'logout', 'playsList']
   },
 };
 
