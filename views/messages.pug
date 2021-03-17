@@ -2,6 +2,7 @@ extends layout
 
 block scripts
   script(src='javascripts/messages.js')
+  script(src='javascripts/chrono.js')
 
 block content  
   .container-fluid
@@ -9,7 +10,7 @@ block content
       .col-8.bg-danger
         marquee urgent
       .col-4
-        .sticky Chrono
+        include includes/chrono.pug
     .row
       .col
         h1#titrePiece.text-center

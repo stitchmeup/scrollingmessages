@@ -1,10 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var path = require('path');
 var xml2jsonParser = require('../modules/xml2jsonParser');
 var formatXml = require('xml-formatter');
-var fs = require('fs');
-var { query, body, validationResult, oneOf } = require('express-validator');
+var { query, body, validationResult } = require('express-validator');
 var DbClient = require('../modules/DbClient')
 
 

@@ -1,12 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var jwt = require('../modules/jwtAuth')
 var DbClient = require('../modules/DbClient')
 var multer  = require('multer')
 var fs = require('fs');
 var crypto = require('crypto');
-var { body, validationResult } = require('express-validator');
-var fileUpload = require('express-fileupload');
+var { body, validationResult } = require('express-validator');;
 var xml2jsonParser = require("xml2json")
 
 /* GET home page. */
