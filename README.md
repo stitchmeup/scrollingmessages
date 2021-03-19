@@ -8,6 +8,7 @@ Fonctionne avec une BDD MongoDB, non fournie pour l'instant
 En développement
 
 Changelog:
+
 ☐ Front:
 - Affichage défilants d'une pièce récupérée au format XML avec une requête AJAX
 - Design de l'interface d'affichage des messages
@@ -28,6 +29,7 @@ Changelog:
 - SSR avec PUG (abandon d'HTML)
 
 #15/03 v1.0
+
 ☐ Front:
 - Utilisation des sources avec Bootstrap (pas d'accès internet pour les clients)
 - Interface admin
