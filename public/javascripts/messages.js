@@ -1,9 +1,9 @@
 // Ajax
-function playData(url){
+function ajaxRequest(url, callback){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      parseXML(this);
+      callback(this);
     }
   };
 
@@ -139,9 +139,22 @@ function parseXML(xml) {
     setTimeout(pageScroll, 3000);
 }
 
+function showUrg(response) {
+  let msgUrg = JSON.parse(response.responseText);
 
+  document.getElementById('msgUrg').innerHTML = msgUrg.items[0].message;
+}
+
+function getUrg() {
+  ajaxRequest('/urgent', showUrg)
+  setTimeout(getUrg, 20000);
+}
 
 // Main
 const queryString = window.location.search;
 const url = "playData" + queryString;
-playData(url);
+window.onload = () => {
+  ajaxRequest(url, parseXML);
+  chronoStart();
+  getUrg();
+};

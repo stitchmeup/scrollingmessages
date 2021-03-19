@@ -1,30 +1,29 @@
 .container-fluid
+  form#screenConf.d-flex.flex-column.border-top.m-2(action='/messages' method='GET')
     label(for='piece') Sélectionner une pi&egrave;ce
     .row.justify-content-between
-      select#playsList.form-control.col-auto
-
-form#screenConf.d-flex.flex-column.border-top.m-2(action='/messages' method='GET')
-  .form-group.row
-    .col-6
-      label(for='equipes') Equipes
-      select#equipes.form-control(multiple='' name='equipe')
-    .col-3
-      label(for='start') Sc&egrave;ne de d&eacute;but
-      input#start.form-control(type='number' name='start' placeholder='1' value='1' size='16')
-    .col-3
-      label(for='end') Sc&egrave;ne de fin
-      input#end.form-control(type='number' name='end' placeholder='100' value='100' size='16')
-  .form-group
-    .form-check
-      input#sync.form-check-input(type='radio' name='text' value='sync' checked='')
-      label.form-check-label(for='sync')
-        | Afficher uniquement le texte qui correspond &agrave; un message pour une &eacute;quipe. (d&eacute;faut)
-    .form-check
-      input#full.form-check-input(type='radio' name='text' value='full')
-      label.form-check-label(for='full')
-        | Afficher tout le texte.
-    .form-check
-      input#aucun.form-check-input(type='radio' name='text' value='none')
-      label.form-check-label(for='full')
-        | Afficher aucun texte.
-  button.btn.btn-primary.m-2.mx-auto(type='submit') Afficher les messages
+      select#playsList.form-control.col-auto(name='piece')
+    .form-group.row
+      .col-6
+        label(for='equipes') Equipes
+        select#equipes.form-control(multiple='' name='equipe')
+      .col-3
+        label(for='start') Sc&egrave;ne de d&eacute;but
+        input#start.form-control(type='number' name='start' placeholder='1' value='1' size='16')
+      .col-3
+        label(for='end') Sc&egrave;ne de fin
+        input#end.form-control(type='number' name='end' placeholder='100' value='100' size='16')
+    .form-group
+      .form-check
+        input#sync.form-check-input(type='radio' name='text' value='sync' checked='')
+        label.form-check-label(for='sync')
+          | Afficher uniquement le texte qui correspond &agrave; un message pour une &eacute;quipe. (d&eacute;faut)
+      .form-check
+        input#full.form-check-input(type='radio' name='text' value='full')
+        label.form-check-label(for='full')
+          | Afficher tout le texte.
+      .form-check
+        input#aucun.form-check-input(type='radio' name='text' value='none')
+        label.form-check-label(for='full')
+          | Afficher aucun texte.
+    button.btn.btn-primary.m-2.mx-auto(type='submit') Afficher les messages

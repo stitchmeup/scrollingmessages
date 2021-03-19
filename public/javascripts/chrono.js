@@ -3,7 +3,6 @@ var start = 0
 var end = 0
 var diff = 0
 var timerID = 0
-window.onload = chronoStart;
 function chrono(){
 	end = new Date()
 	diff = end - start

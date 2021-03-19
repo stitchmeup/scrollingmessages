@@ -9,3 +9,7 @@ a {
 table caption {
   caption-side: top;
 }
+
+#msgUr {
+  font-size(4rem);
+}

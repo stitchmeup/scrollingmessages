@@ -59,7 +59,7 @@ app.use(cookieParser());
 // require all defined routes
 var routers = {
   base: {
-    names: ['index', 'playData', 'messages', 'login', 'logout', 'playsList']
+    names: ['index', 'playData', 'messages', 'login', 'logout', 'playsList', 'urgent']
   },
 };
 
@@ -77,8 +77,6 @@ app.use(function(req, res, next) {
 
 // Specific error handler
 app.use(function(err, req, res, next) {
-  console.log("ERROR ROUTE")
-  console.log(err)
   let errorsMessages = {
     400: 'Bad Request',
     401: 'Unauthorized',

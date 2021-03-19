@@ -1,15 +1,51 @@
 extends layout
 
+block scripts
+  script(src='/javascripts/admin.js')
+
 block content
   .container-fluid
-    h2 Ajouter une pièce
-    form#uploadFile(action='/admin/upload' method='POST' enctype='multipart/form-data')
-      .form-group.row.align-item-center
-        label.col-sm-2.col-form-label(for='name') Nom de la pièce
-        .col-auto
-          input#name.form-control(type='text' name='name')
-        label.col-sm-2.col-form-label(for='xmlFile')  Sélectionner un fichier au format XML
-        .col-auto
-          input#xmlFile(type='file' name='xmlFile' value='xmlFile')
-        button.btn.btn-primary.mx-auto(type='submit') Ajouter
+    #upload
+      h2 Ajouter une pièce
+      form#uploadFile(action='/admin/upload' method='POST' enctype='multipart/form-data')
+        .form-group.row.align-item-center
+          label.col-sm-2.col-form-label(for='name') Nom de la pièce
+          .col-auto
+            input#name.form-control(type='text' name='name')
+          label.col-sm-2.col-form-label(for='xmlFile')  Sélectionner un fichier au format XML:
+          .col-auto
+            input#xmlFile(type='file' name='xmlFile' value='xmlFile')
+          button.btn.btn-primary.mx-auto(type='submit') Ajouter
+    #delete
+      h2 Supprimmer une pièce
+      form#deletePlay(action='/admin/delete' method='POST')
+        .form-group.row.align-item-center
+          .col-auto
+            label(for='playsList') Sélectionner une pi&egrave;ce à supprimer
+          .col-auto
+            select#playsList.custom-select(name='play' form='deletePlay')
+          .col-auto
+            button.btn.btn-primary.mx-auto(type='submit') Supprimer
+    #modify
+      h2 Modifier le mot de passe
+      form#modifyPwd(action='/admin/updatePwd' method='POST')
+        .form-goup.row.align-item-center
+          label.col-sm-2.col-form-label(for='pwd1') Nouveau mot de passe
+          .col-auto
+            input#pwd1.form-control(type='password' name='pwd1')
+        .form-group.row.align-item-center
+          label.col-sm-2.col-form-label(for='pwd2') Confirmer le mot de passe
+          .col-auto
+            input#pwd1.form-control(type='password' name='pwd2')
+        button.btn.btn-primary.mx-auto(type='submit') Modifier
+    #urgent
+      h2 Message urgent
+      p Temporisation de mise à jour sur les écrans: 30 secondes.
+      form#urgent(action='/admin/msgUrg' method='GET')
+        .form-group.row.align-item-center
+          label.col-sm-2.col-form-lab(for='msgUrg') Message
+          .col-auto
+            input#msgUrg.form-control(type='text' name='msgUrg')
+          .col-auto
+            button.btn.btn-primary.mx-auto(type='submit') Envoyer
       

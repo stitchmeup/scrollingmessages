@@ -31,6 +31,8 @@ class DbClient {
     await this.client.close();
   }
 
+  // -----------------------------
+  // User
   // Find a user in database
   async findUser(username) {
     const dbQuery = { username: username }
@@ -47,6 +49,8 @@ class DbClient {
     .findOne(dbQuery);
   }
 
+  // -----------------------------
+  // Play
   // Find plays by filename
   async findPlayByNameHash(nameHash) {
     const dbQuery = { "nameHash": nameHash };
@@ -102,6 +106,35 @@ class DbClient {
     .catch(err => err);
   }
 
+  // delete plays
+  async deletePlay(nameHash) {
+    let playContentId = await this.findPlayByNameHash(nameHash)
+    .then(res => res.playContentId)
+    .catch(err => null);
+
+    if (playContentId) {
+      const dbQueryContent = { '_id': playContentId }
+      let deleteContent = await this.db.collection('playsContent')
+      .deleteOne(dbQueryContent)
+      .then(res => res)
+      .catch(err => { throw new Error(err) });
+      if (deleteContent) {
+        const dbQueryList = { 'nameHash': nameHash }
+        return await this.db.collection('playsList')
+        .deleteOne(dbQueryList)
+        .then(res => {
+          if (res) return true
+          else return false
+        })
+        .catch(err => { throw new Error(err) });
+      } else {
+        return false
+      }
+    }
+  }
+
+  // -----------------------------
+  //Auth and Password
   // Check password for a given user (so ugly)
   async checkPwd(username, pwd) {
     let user = await this.findUser(username)
@@ -128,7 +161,59 @@ class DbClient {
       return false;
     }
   }
+
+  async hashPwd(password, saltRounds = 10) {
+    try {
+        // Generate a salt
+        const salt = await bcrypt.genSalt(saltRounds);
+
+        // Hash password
+        return await bcrypt.hash(password, salt);
+    } catch (error) {
+        return null
+    }
+  }
+
+  async updatePwd(hashPassword, username) {
+    const dbFilter = { 'username': username}
+    const dbUpdate = { '$set': { 'pwd': hashPassword } }
+    return await this.db.collection('users')
+    .updateOne(dbFilter, dbUpdate)
+    .then(res => res)
+    .catch(err => { throw new Error(err) })
+  }
+
+  // -----------------------------
+  // Urgent
+  async findMsgUrg() {
+    const dbQuery = {};
+    return await this.db.collection('urgent')
+    .findOne(dbQuery)
+    .then(res => res)
+    .catch(err => { throw new Error(err) });
+  }
+
+  async updateMsgUrg(msg, date) {
+    const dbQuery = {};
+    let id = await this.db.collection('urgent')
+    .findOne(dbQuery)
+    .then(res => res._id)
+    .catch(err => { throw new Error(err) });
+    if (id) {
+      const dbFilter = { '_id': id };
+      const dbUpdate = { '$set': {
+        'message': msg,
+        'date_published': date
+      }};
+      return await this.db.collection('urgent')
+      .updateOne(dbFilter, dbUpdate)
+      .then(res => res)
+      .catch(err => { throw new Error(err) });
+    }
+  }
+
 }
+
 
 /*
 // Main for test
