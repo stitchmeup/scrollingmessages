@@ -22,7 +22,7 @@ router.get('/urgent', async function(req, res, next) {
     let msgUrg = await client.findMsgUrg();
 
     feed.items[0].id = `message_urgent.${msgUrg.date}`;
-    feed.items[0].date_published = msgUrg.date;
+    feed.items[0].date_published = msgUrg.timestamp;
     feed.items[0].message = msgUrg.message;
 
     res.set('Content-type', 'application/json');
