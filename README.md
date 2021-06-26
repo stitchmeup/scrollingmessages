@@ -1,5 +1,5 @@
 # scrollingmessages
-Projet Tut, messages défilants avec interface d'administration
+Projet universitaire, messages défilants avec interface d'administration
 
 Inclu un parseur XML en asynchrone
 
