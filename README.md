@@ -5,7 +5,7 @@ Inclu un parseur XML en asynchrone
 
 Fonctionne avec une BDD MongoDB, non fournie pour l'instant
 
-En développement
+(Développement abandonné)
 
 Changelog:
 
